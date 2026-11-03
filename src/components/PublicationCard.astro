@@ -1,0 +1,55 @@
+---
+const { paper, people=[] } = Astro.props;
+const d=paper.data;
+const base=import.meta.env.BASE_URL;
+// BibTeX authors use 'and' separators. Commas inside family-name-first notation are not separators.
+const authors=d.authors.split(/\s+and\s+/i).map((x:string)=>x.trim()).filter(Boolean);
+function normalise(value:string){
+  const v=value.replace(/^(Dr\.?|Prof\.?)\s+/i,'').trim();
+  const parts=v.includes(',')?v.split(',').map((s:string)=>s.trim()).reverse().join(' '):v;
+  return parts.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+}
+function matchAuthor(a:string,b:string){
+  const x=normalise(a),y=normalise(b);if(x===y)return true;
+  const xx=x.split(' '),yy=y.split(' ');
+  return xx.length>=2&&yy.length>=2&&xx.at(-1)===yy.at(-1)&&xx[0][0]===yy[0][0];
+}
+const matches=authors.map((name:string)=>({name,member:people.find((person:any)=>(person.data.authorAliases||[]).some((alias:string)=>matchAuthor(name,alias)))}));
+const highlighted=matches.filter((item:any)=>item.member);
+const isPI=highlighted.some((m:any)=>m.member.id==='ardak-kashkynbayev');
+const hasTeam=highlighted.length>0;
+const initial=(name:string)=>name.replace(/^Dr\.\s*/,'').split(/\s+/).map((s:string)=>s[0]).slice(0,2).join('').toUpperCase();
+const theme=(()=>{
+  if(d.area)return d.area;
+  const t=d.title.toLowerCase();
+  if(/reinforcement learning|optimal control|homotop|policy iteration|pid fine-tuning|tracking control/.test(t))return 'Learning & optimal control';
+  if(/reaction.diffusion|boundary control|pde|heat equation|wave equation|fisher.kpp|dirac operator|stratified groups/.test(t))return 'PDE & applied mathematics';
+  if(/cyber.attack|false data injection|deception|privacy protection|secure communication/.test(t))return 'Cyber-resilient systems';
+  if(/neural network|synchronization|stability|impuls|markov|consensus|time.delay|switched system/.test(t))return 'Dynamical & networked systems';
+  if(/cancer|tumor|tuberculosis|hiv|glioblastoma|epidem|disease|vaccine|lymphoma|biological/.test(t))return 'Mathematical biology';
+  if(/fuzzy rough set|feature selection|classification|machine learning|data.driven/.test(t))return 'Scientific machine learning';
+  return 'Other research';
+})();
+const citationCount=typeof d.citationCount==='number'?d.citationCount:null;
+---
+<article class="licad-paper" data-year={d.year} data-type={d.type} data-area={theme} data-pi={isPI?'yes':'no'} data-member={hasTeam?'yes':'no'} data-oa={d.openAccess===true?'yes':'no'} data-citations={citationCount??''} data-search={`${d.title} ${d.authors} ${d.venue} ${theme} ${d.year} ${highlighted.map((x:any)=>x.member.data.name).join(' ')}`.toLowerCase()}>
+  <h2 class="licad-paper-title"><a href={`${base}publications/${paper.id}/`}>{d.title}</a></h2>
+  <p class="licad-paper-authors">{matches.map(({name,member}:any,i:number)=><>{i>0?', ':''}{member?<a href={`${base}people/${member.id}/`} class="licad-author-link">{name}</a>:<span>{name}</span>}</>)}</p>
+  <p class="licad-paper-venue"><em>{d.venue}</em><span aria-hidden="true"> · </span>{d.year}</p>
+  {highlighted.length>0&&<div class="licad-paper-team" aria-label="LICAD coauthors">
+    {highlighted.map(({member}:any)=>{
+      const portrait=member.data.photo?.replace(/^\//,'')||'images/team/placeholder-person.svg';
+      return <a href={`${base}people/${member.id}/`} class="licad-paper-person" title={`Open ${member.data.name}'s profile`}><span class="licad-paper-portrait"><img src={`${base}${portrait}`} alt="" loading="lazy"/></span><span>{member.data.name.replace(/^Dr\.\s*/,'')}</span></a>;
+    })}
+  </div>}
+  <div class="licad-paper-bottom">
+    <span class="licad-tag licad-tag-kind">{d.type}</span>
+    {isPI&&<span class="licad-tag licad-tag-pi">PI coauthor</span>}
+    {hasTeam&&<span class="licad-tag licad-tag-team">LICAD authors</span>}
+    {d.openAccess===true&&<span class="licad-tag licad-tag-oa">Open access</span>}
+    {citationCount!==null&&<span class="licad-tag licad-tag-cites">Cited by {citationCount}</span>}
+    {d.doi&&<a href={`https://doi.org/${d.doi}`} rel="noopener noreferrer" target="_blank">DOI</a>}
+    {d.url&&<a href={d.url} rel="noopener noreferrer" target="_blank">Paper</a>}
+    <a href={`${base}publications/${paper.id}/`}>BibTeX / details</a>
+  </div>
+</article>

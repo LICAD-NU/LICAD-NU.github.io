@@ -1,0 +1,29 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import 'katex/dist/katex.min.css';
+import {SITE} from '../config/site';
+const {title,description=SITE.description}=Astro.props;
+const fullTitle=title?`${title} | LICAD`:'LICAD — Laboratory for Intelligent Control & Applied Dynamics';
+const canonical=new URL(Astro.url.pathname,Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#081c32" />
+    <meta name="description" content={description}/>
+    <link rel="canonical" href={canonical}/>
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <title>{fullTitle}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body><Header/><main id="main"><slot /></main><Footer/></body>
+</html>

@@ -1,7 +1,0 @@
----
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
-import {getCollection} from 'astro:content';
-const projects=(await getCollection('projects')).sort((a,b)=>a.data.order-b.data.order);
----
-<BaseLayout title="Projects"><section class="page-hero"><div class="container"><span class="eyebrow eyebrow-light">RESEARCH THEMES & PROJECTS</span><h1>Questions worth <em>exploring.</em></h1><p>Emerging directions and thematic initiatives connecting rigorous analysis with computational progress.</p></div></section><section class="section"><div class="container"><div class="notice">These entries are illustrative research themes, not claims of funded or officially active projects. Update statuses and descriptions as projects are confirmed.</div><div class="projects-grid">{projects.map(p=><ProjectCard project={p}/>)}</div></div></section></BaseLayout>

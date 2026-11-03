@@ -1,0 +1,17 @@
+---
+const {project}=Astro.props;
+const d=project.data;
+const base=import.meta.env.BASE_URL;
+const isTheme=d.status==='theme';
+const fmt=(value:string)=>new Date(value+'T00:00:00').toLocaleDateString('en-US',{month:'short',year:'numeric'});
+---
+<a class="project-card" href={`${base}projects/${project.id}/`}>
+  <span class="project-tag">{isTheme?'Research direction':d.status==='active'?'Active project':'Finished project'} {d.fundingType?` · ${d.fundingType}`:''}</span>
+  <div class="project-icon" aria-hidden="true">{d.area.includes('PDE')?'∂':d.area.includes('Learning')?'↗':'◈'}</div>
+  <h3>{d.title}</h3>
+  {d.startDate&&d.endDate&&<p class="project-date">{fmt(d.startDate)} – {fmt(d.endDate)}</p>}
+  <p>{d.summary}</p>
+  {d.principalInvestigator&&<p class="project-pi"><strong>PI:</strong> {d.principalInvestigator}</p>}
+  {d.keywords.length>0&&<div class="project-keywords">{d.keywords.slice(0,4).map((k:string)=><span>{k}</span>)}</div>}
+  <span class="project-link">{isTheme?'Explore research theme':'Project details'} <span aria-hidden="true">↗</span></span>
+</a>

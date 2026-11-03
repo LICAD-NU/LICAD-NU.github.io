@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {getCollection,render} from 'astro:content';
+export async function getStaticPaths(){return (await getCollection('projects')).map(project=>({params:{slug:project.id},props:{project}}));}
+const {project}=Astro.props;
+const {Content}=await render(project);
+const d=project.data;
+const base=import.meta.env.BASE_URL;
+const isTheme=d.status==='theme';
+---
+<BaseLayout title={d.title}>
+<section class="page-hero compact"><div class="container"><a class="back-link" href={base+'projects/'}>← All projects</a><span class="eyebrow eyebrow-light">{isTheme?'RESEARCH DIRECTION':d.status==='active'?'ACTIVE PROJECT':'FINISHED PROJECT'} {d.fundingType?` · ${d.fundingType}`:''}</span><h1>{d.title}</h1><p>{d.summary}</p></div></section>
+<section class="section"><div class="container narrow prose">
+{isTheme&&<div class="notice">Illustrative research theme: not represented as an officially funded project.</div>}
+{!isTheme&&<div class="project-meta-panel"><p><strong>Project dates:</strong> {d.startDate} – {d.endDate}</p><p><strong>Funding category:</strong> {d.fundingType}</p><p><strong>Principal investigator:</strong> {d.principalInvestigator}</p></div>}
+<Content/>
+</div></section>
+</BaseLayout>

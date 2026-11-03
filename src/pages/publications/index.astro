@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PublicationCard from '../../components/PublicationCard.astro';
+import {getCollection} from 'astro:content';
+import '../../styles/publications.css';
+const papers=(await getCollection('publications')).filter((p)=>!p.data.draft).sort((a,b)=>b.data.year-a.data.year||a.data.title.localeCompare(b.data.title));
+const people=await getCollection('people');
+const years=[...new Set(papers.map(p=>p.data.year))].sort((a,b)=>b-a);
+const types=[...new Set(papers.map(p=>p.data.type))].sort();
+function researchArea(p:any){
+  if(p.data.area)return p.data.area;
+  const t=p.data.title.toLowerCase();
+  if(/reinforcement learning|optimal control|homotop|policy iteration|pid fine-tuning|tracking control/.test(t))return 'Learning & optimal control';
+  if(/reaction.diffusion|boundary control|pde|heat equation|wave equation|fisher.kpp|dirac operator|stratified groups/.test(t))return 'PDE & applied mathematics';
+  if(/cyber.attack|false data injection|deception|privacy protection|secure communication/.test(t))return 'Cyber-resilient systems';
+  if(/neural network|synchronization|stability|impuls|markov|consensus|time.delay|switched system/.test(t))return 'Dynamical & networked systems';
+  if(/cancer|tumor|tuberculosis|hiv|glioblastoma|epidem|disease|vaccine|lymphoma|biological/.test(t))return 'Mathematical biology';
+  if(/fuzzy rough set|feature selection|classification|machine learning|data.driven/.test(t))return 'Scientific machine learning';
+  return 'Other research';
+}
+const areas=[...new Set(papers.map(researchArea))].sort();
+const counts=(field:'year'|'type'|'area',value:string|number)=>papers.filter(p=>field==='area'?researchArea(p)===value:String(p.data[field])===String(value)).length;
+const countOpen=papers.filter(p=>p.data.openAccess===true).length;
+const countCited=papers.filter(p=>typeof p.data.citationCount==='number').length;
+---
+<BaseLayout title="Publications" description="Complete supplied LICAD bibliography, searchable and organized by topic, year, and publication type.">
+  <section class="page-hero compact"><div class="container"><span class="eyebrow eyebrow-light">LICAD · RESEARCH OUTPUT</span><h1>Our <em>publications.</em></h1><p>Browse the supplied bibliography and explore the researchers behind each publication.</p></div></section>
+  <section class="section licad-publications-section"><div class="container">
+    <div class="licad-bib-header"><div><span class="eyebrow">PUBLICATION LIBRARY</span><h2>Research across disciplines</h2></div><div class="licad-total"><strong>{papers.length}</strong><span>supplied records</span></div></div>
+    <div class="licad-filter-groups" aria-label="Publication filters">
+      <div class="licad-filter-row"><span class="licad-filter-label">SHOW</span>
+        <button class="licad-pill is-selected" data-group="team" data-value="all" type="button">All ({papers.length})</button>
+        <button class="licad-pill" data-group="team" data-value="pi" type="button">PI coauthor</button>
+        <button class="licad-pill" data-group="team" data-value="member" type="button">LICAD coauthors</button>
+        {countOpen>0&&<button class="licad-pill" data-group="team" data-value="oa" type="button">Open access ({countOpen})</button>}
+      </div>
+      <div class="licad-filter-row"><span class="licad-filter-label">TYPE</span>
+        <button class="licad-pill is-selected" data-group="type" data-value="all" type="button">All types ({papers.length})</button>
+        {types.map(t=><button class="licad-pill" data-group="type" data-value={t} type="button">{t} ({counts('type',t)})</button>)}
+      </div>
+      <div class="licad-filter-row"><span class="licad-filter-label">AREA</span>
+        <button class="licad-pill is-selected" data-group="area" data-value="all" type="button">All areas</button>
+        {areas.map(a=><button class="licad-pill" data-group="area" data-value={a} type="button">{a} ({counts('area',a)})</button>)}
+      </div>
+      <div class="licad-filter-row"><span class="licad-filter-label">YEAR</span>
+        <button class="licad-pill is-selected" data-group="year" data-value="all" type="button">All years</button>
+        {years.map(y=><button class="licad-pill" data-group="year" data-value={y} type="button">{y} ({counts('year',y)})</button>)}
+      </div>
+    </div>
+    <div class="licad-bib-tools">
+      <label class="licad-search-wrap"><span class="sr-only">Search paper titles and authors</span><input id="licad-paper-search" type="search" placeholder="Search title, author, journal, topic…" autocomplete="off"/></label>
+      <span class="licad-sort-label">Sort</span>
+      <button class="licad-sort is-selected" data-sort="newest" type="button">Newest</button>
+      <button class="licad-sort" data-sort="oldest" type="button">Oldest</button>
+      {countCited===papers.length&&countCited>0&&<button class="licad-sort" data-sort="cited" type="button">Most cited</button>}
+      <span id="licad-visible-count" class="licad-visible-count">{papers.length} of {papers.length}</span>
+    </div>
+    <div class="licad-publication-list" id="licad-publication-list">{papers.map(p=><PublicationCard paper={p} people={people}/>)}</div>
+    <p class="licad-empty" id="licad-empty" hidden>No papers match these filters. Try a different search or category.</p>
+    <p class="licad-bib-note">Bibliography imported from the user-supplied reference file. Research-area labels are automatically inferred from titles when no area is provided. Citation counts and open-access labels appear only when the corresponding metadata is supplied; missing DOI links are not invented. Author portraits link to LICAD profiles.</p>
+  </div></section>
+</BaseLayout>
+<script>
+  const records=Array.from(document.querySelectorAll<HTMLElement>('.licad-paper'));
+  const parent=document.querySelector<HTMLElement>('#licad-publication-list');
+  const search=document.querySelector<HTMLInputElement>('#licad-paper-search');
+  const counter=document.querySelector<HTMLElement>('#licad-visible-count');
+  const empty=document.querySelector<HTMLElement>('#licad-empty');
+  const selected:{[key:string]:string}={team:'all',type:'all',area:'all',year:'all'};
+  let sort='newest';
+  function update(){
+    const q=(search?.value||'').toLocaleLowerCase().trim();
+    let count=0;
+    for(const record of records){
+      const groupMatch=Object.entries(selected).every(([field,value])=>{
+        if(value==='all')return true;
+        if(field==='team')return record.dataset[value==='pi'?'pi':value==='oa'?'oa':'member']==='yes';
+        return record.dataset[field]===value;
+      });
+      const visible=groupMatch&&(!q||(record.dataset.search||'').includes(q));
+      record.hidden=!visible;if(visible)count++;
+    }
+    if(counter)counter.textContent=`${count} of ${records.length}`;
+    if(empty)empty.hidden=count!==0;
+    const ordered=[...records].sort((a,b)=>{
+      const yearA=Number(a.dataset.year||0),yearB=Number(b.dataset.year||0);
+      if(sort==='cited')return Number(b.dataset.citations||0)-Number(a.dataset.citations||0)||yearB-yearA;
+      return (sort==='oldest'?yearA-yearB:yearB-yearA)||(a.querySelector('h2')?.textContent||'').localeCompare(b.querySelector('h2')?.textContent||'');
+    });
+    for(const record of ordered)parent?.append(record);
+  }
+  document.querySelectorAll<HTMLButtonElement>('.licad-pill').forEach(btn=>btn.addEventListener('click',()=>{
+    const group=btn.dataset.group||'',value=btn.dataset.value||'all';selected[group]=value;
+    document.querySelectorAll<HTMLButtonElement>(`.licad-pill[data-group="${group}"]`).forEach(item=>item.classList.toggle('is-selected',item===btn));update();
+  }));
+  document.querySelectorAll<HTMLButtonElement>('.licad-sort').forEach(btn=>btn.addEventListener('click',()=>{
+    sort=btn.dataset.sort||'newest';document.querySelectorAll('.licad-sort').forEach(item=>item.classList.toggle('is-selected',item===btn));update();
+  }));
+  search?.addEventListener('input',update);
+</script>

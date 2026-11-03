@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {getCollection,render} from 'astro:content';
+export async function getStaticPaths(){const people=await getCollection('people');return people.map(person=>({params:{slug:person.id},props:{person}}));}
+const {person}=Astro.props;
+const {Content}=await render(person);
+const d=person.data;
+const initials=d.name.split(/\s+/).map((w:string)=>w[0]).slice(0,2).join('');
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title={d.name}><section class="page-hero compact"><div class="container"><a class="back-link" href={base+'people/'}>← All people</a><span class="eyebrow eyebrow-light">{d.status==='former'?'ALUMNI':'TEAM MEMBER'}</span><h1>{d.name}</h1><p>{d.role}</p></div></section><section class="section"><div class="container profile-grid"><div><div class="profile-photo">{d.photo?<img src={base+d.photo.replace(/^\//,'')} alt={`Portrait of ${d.name}`}/>:<span>{initials}</span>}</div></div><div class="profile-detail"><span class="eyebrow">PROFILE</span><h2>{d.role}</h2>{d.affiliation&&<p class="profile-affiliation">{d.affiliation}</p>}<div class="prose"><Content/></div>{d.interests.length>0&&<div class="tags">{d.interests.map((x:string)=><span>{x}</span>)}</div>}<div class="profile-links">{d.email&&<a href={`mailto:${d.email}`}>Email ↗</a>}{d.scholar&&<a href={d.scholar} target="_blank" rel="noopener noreferrer">Google Scholar ↗</a>}{d.orcid&&<a href={d.orcid} target="_blank" rel="noopener noreferrer">ORCID ↗</a>}{d.github&&<a href={d.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a>}{d.website&&<a href={d.website} target="_blank" rel="noopener noreferrer">Website ↗</a>}</div></div></div></section></BaseLayout>

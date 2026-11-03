@@ -1,0 +1,44 @@
+/* LICAD bibliography redesign — standalone, does not override site-wide branding. */
+.licad-publications-section{padding-top:70px}
+.licad-bib-header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:34px}
+.licad-bib-header h2{font-size:clamp(1.75rem,3vw,2.8rem);margin-bottom:0}
+.licad-total{display:flex;gap:9px;align-items:baseline;color:#52657f;white-space:nowrap}
+.licad-total strong{font-size:2.1rem;color:#175d98;line-height:1}.licad-total span{font-size:.8rem}
+.licad-filter-groups{display:flex;flex-direction:column;gap:14px;margin-bottom:26px}
+.licad-filter-row{display:flex;align-items:center;flex-wrap:wrap;gap:9px}
+.licad-filter-label{font-size:11px;letter-spacing:.1em;color:#62748b;font-weight:800;min-width:52px}
+.licad-pill,.licad-sort{appearance:none;border:1px solid #c4d3e5;background:#fff;color:#435a77;border-radius:28px;padding:10px 17px;font-size:14px;line-height:1.25;font-weight:550;transition:background .15s,border-color .15s;white-space:normal;text-align:center}
+.licad-pill.is-selected,.licad-sort.is-selected,.licad-pill:hover,.licad-sort:hover{background:#145e99;color:white;border-color:#145e99}
+.licad-pill:focus-visible,.licad-sort:focus-visible,#licad-paper-search:focus-visible{outline:3px solid #6ab9ea;outline-offset:2px}
+.licad-bib-tools{display:flex;align-items:center;gap:10px;margin:25px 0 30px;flex-wrap:wrap}
+.licad-search-wrap{display:block;flex:1 1 360px}
+#licad-paper-search{width:100%;height:50px;border:1.5px solid #3079c0;border-radius:8px;padding:12px 18px;color:#233955;font:inherit;font-size:16px;background:white}
+#licad-paper-search::placeholder{color:#8793a4}
+.licad-sort-label{font-size:14px;color:#455973;margin-left:4px}
+.licad-sort{padding:10px 17px}
+.licad-visible-count{font-size:14px;color:#5b6d85;margin-left:auto;white-space:nowrap}
+.licad-publication-list{border:0}
+.licad-paper{padding:29px 0 31px;border-bottom:1px solid #e1e8f1}
+.licad-paper:first-child{border-top:0}
+.licad-paper[hidden]{display:none!important}
+.licad-paper-title{font:650 clamp(20px,2.1vw,25px)/1.45 'DM Sans',Arial,sans-serif;letter-spacing:-.025em;color:#10223c;margin:0 0 8px}
+.licad-paper-title a:hover{text-decoration:underline;text-decoration-color:#1a73a4}
+.licad-paper-authors{color:#435874;font-size:15px;line-height:1.8;margin:0 0 4px}
+.licad-author-link{font-weight:700;color:#162e4d}.licad-author-link:hover{text-decoration:underline}
+.licad-paper-venue{font-size:15px;color:#5c7089;margin:0 0 12px}
+.licad-paper-team{display:flex;flex-wrap:wrap;gap:10px 20px;margin:16px 0 13px}
+.licad-paper-person{display:inline-flex;gap:9px;align-items:center;font-size:13px;color:#435875}
+.licad-paper-person:hover{color:#0b609b}
+.licad-paper-portrait{display:inline-flex;width:44px;height:44px;border-radius:50%;overflow:hidden;background:#dbe6ee;border:1px solid #d8e3ed;flex-shrink:0;align-items:center;justify-content:center}
+.licad-paper-portrait img{height:100%;width:100%;object-fit:cover}
+.licad-paper-bottom{display:flex;align-items:center;flex-wrap:wrap;gap:9px 12px;font-size:13px;margin-top:13px}
+.licad-paper-bottom>a{color:#135e9a;font-weight:600}.licad-paper-bottom>a:hover{text-decoration:underline}
+.licad-tag{display:inline-flex;align-items:center;border-radius:100px;padding:4px 12px;font-size:12px;line-height:1.35}
+.licad-tag-kind{background:#e6edf6;color:#485c75}
+.licad-tag-pi{background:#d9eafc;color:#175a91}
+.licad-tag-team{background:#f6dff0;color:#8b296f}
+.licad-tag-oa{background:#d4f8e9;color:#087451}
+.licad-tag-cites{background:#fff2c9;color:#93621b}
+.licad-bib-note{max-width:980px;margin-top:35px;font-size:12px;color:#637991;line-height:1.7}
+.licad-empty{padding:30px 0;color:#526682;font-weight:600}
+@media(max-width:700px){.licad-bib-header{align-items:flex-start}.licad-total strong{font-size:1.6rem}.licad-filter-label{min-width:100%}.licad-filter-row{gap:7px}.licad-pill,.licad-sort{padding:8px 12px;font-size:12px}.licad-paper-title{font-size:20px}.licad-paper-venue,.licad-paper-authors{font-size:13px}.licad-visible-count{margin-left:0}}

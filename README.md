@@ -110,3 +110,26 @@ GitHub Pages URL: https://LICAD-NU.github.io/
 ## Funded projects (updated November 2026)
 
 Includes eight project records supplied by the user: two active and six finished, with project dates, participants, project categories and topic keywords. Project content lives in `src/content/projects/`; update a Markdown record to revise a project. The three illustrative research themes remain separate from the funded projects.
+
+
+## GitHub Actions install fix (November 2026)
+
+This project pins `mdast-util-gfm-table` to `2.0.0` through npm `overrides`.
+A GitHub Actions install previously failed while requesting a non-existent `2.0.1` tarball.
+The deployment workflow uses `npm install --no-package-lock --no-audit --no-fund`
+to avoid any stale lockfile previously committed during manual uploads.
+
+To update the existing organization repository using GitHub Desktop:
+
+1. Clone `LICAD-NU/LICAD-NU.github.io` if you have not already.
+2. In Finder, open the cloned repository with **Repository → Show in Finder**.
+3. Remove stale project files in that cloned folder, but **never delete its hidden `.git` directory**.
+4. Copy the **contents** of this ZIP into the cloned repository root. Do not add an outer folder.
+5. Delete any accidental duplicated `.github/workflows/.github/...` directory.
+6. Commit in GitHub Desktop and click **Push origin**.
+7. Under GitHub Settings → Pages, select **GitHub Actions**, then inspect the latest Actions run.
+
+Note: This ZIP was statically validated (content front matter, file paths and folder structure),
+but npm package installation and an end-to-end Astro build could not be completed in the
+artifact environment because registry network access was unavailable. A successful live
+Actions run remains the final confirmation.

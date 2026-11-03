@@ -1,0 +1,28 @@
+---
+title: "Verified paper title"
+authors: "Author A, Author B, and Author C"
+year: 2026
+venue: "Journal or conference name"
+type: Journal
+doi: "10.xxxx/example"  # remove until a real DOI is verified
+url: "https://example.org/paper"  # remove until a real link is verified
+featured: false
+draft: false
+bibtex: |
+  @article{example2026,
+    title={Verified paper title},
+    author={Author A and Author B and Author C},
+    journal={Journal name},
+    year={2026}
+  }
+---
+## Abstract
+Replace with the verified abstract or a brief original summary.
+
+Inline math: $V(x) = x^\top Px$.
+
+Display math:
+
+$$
+\dot{x} = Ax + Bu.
+$$

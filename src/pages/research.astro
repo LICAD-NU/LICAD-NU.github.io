@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {researchAreas} from '../config/site';
+import katex from 'katex';
+const pde=katex.renderToString(String.raw`\partial_t u = D\,\partial_{xx}u + f(u) + B(x)U(t)`,{displayMode:true,throwOnError:false});
+const cost=katex.renderToString(String.raw`J(\pi)=\int_0^\infty (x^\top Qx+u^\top Ru)\,dt`,{displayMode:true,throwOnError:false});
+---
+<BaseLayout title="Research"><section class="page-hero"><div class="container"><span class="eyebrow eyebrow-light">RESEARCH</span><h1>Fundamental theory.<br/><em>Intelligent applications.</em></h1><p>Our research connects dynamical systems, optimal control, scientific machine learning, and cyber resilience through mathematical modeling and computational investigation.</p></div></section><section class="section"><div class="container"><div class="research-list">{researchAreas.map((a,i)=><article class="research-row"><div class="research-index">{a.number}</div><div><span class="research-icon">{a.icon}</span><h2>{a.title}</h2><p>{a.summary}</p>{i===2 && <div class="math-note"><span>EXAMPLE GOVERNING EQUATION</span><div class="math-render" set:html={pde}/><small>Displayed for illustration; not a specific LICAD model or result.</small></div>}{i===1 && <div class="math-note"><span>EXAMPLE OPTIMAL CONTROL OBJECTIVE</span><div class="math-render" set:html={cost}/><small>Illustrative quadratic performance index.</small></div>}</div></article>)}</div></div></section></BaseLayout>

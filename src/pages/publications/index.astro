@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PublicationCard from '../../components/PublicationCard.astro';
+import {getCollection} from 'astro:content';
+const papers=(await getCollection('publications')).filter(p=>!p.data.draft).sort((a,b)=>b.data.year-a.data.year);
+const years=[...new Set(papers.map(p=>p.data.year))].sort((a,b)=>b-a);
+---
+<BaseLayout title="Publications"><section class="page-hero"><div class="container"><span class="eyebrow eyebrow-light">PUBLICATIONS</span><h1>Ideas made <em>public.</em></h1><p>Research outputs, journal papers, conference proceedings, and open access resources, with DOI and BibTeX support.</p></div></section><section class="section"><div class="container"><div class="pub-tools"><label class="search-field"><span class="sr-only">Search publications</span><input type="search" id="paper-search" placeholder="Search title, author, venue..."/></label><label class="sr-only" for="year-filter">Filter by year</label><select id="year-filter"><option value="all">All years</option>{years.map(y=><option value={y}>{y}</option>)}</select><label class="sr-only" for="type-filter">Filter by type</label><select id="type-filter"><option value="all">All types</option><option>Journal</option><option>Conference</option><option>Preprint</option><option>Other</option></select></div>{papers.length>0?<div class="publication-list" id="publication-list">{papers.map(p=><PublicationCard paper={p}/>)}</div>:<div class="placeholder-panel"><span class="placeholder-icon">▤</span><h2>Awaiting the verified publication list</h2><p>To prevent incorrect attribution, this site does not invent articles or affiliations. Add validated publication Markdown entries with authors, year, venue, DOI and BibTeX.</p><p>Start with <code>src/content/publications/_TEMPLATE.md.example</code>.</p></div>}<p class="no-results" id="no-results" hidden>No publications match these filters.</p></div></section></BaseLayout>
+<script>
+ const search=document.querySelector<HTMLInputElement>('#paper-search');
+ const year=document.querySelector<HTMLSelectElement>('#year-filter');
+ const type=document.querySelector<HTMLSelectElement>('#type-filter');
+ const rows=Array.from(document.querySelectorAll<HTMLElement>('.publication-card'));
+ const none=document.querySelector<HTMLElement>('#no-results');
+ function filter(){const q=search?.value.toLowerCase().trim()??'';let count=0;rows.forEach(row=>{const visible=(!q||row.dataset.search?.includes(q))&&(year?.value==='all'||row.dataset.year===year?.value)&&(type?.value==='all'||row.dataset.type===type?.value);row.hidden=!visible;if(visible)count++});if(none)none.hidden=count!==0||rows.length===0;}
+ [search,year,type].forEach(x=>x?.addEventListener('input',filter));
+</script>

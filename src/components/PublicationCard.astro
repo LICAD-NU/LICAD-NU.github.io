@@ -1,0 +1,8 @@
+---
+const {paper}=Astro.props;
+const d=paper.data;
+const base=import.meta.env.BASE_URL;
+---
+<article class="publication-card" data-year={d.year} data-type={d.type} data-search={`${d.title} ${d.authors} ${d.venue} ${d.year}`.toLowerCase()}>
+ <div class="publication-year">{d.year}</div><div class="publication-body"><div class="publication-meta"><span>{d.type}</span><span>·</span><span>{d.venue}</span>{d.draft && <span class="draft-label">Illustrative example</span>}</div><h3>{d.title}</h3><p>{d.authors}</p><div class="paper-links">{!d.draft && d.doi && <a href={`https://doi.org/${d.doi}`} target="_blank" rel="noopener noreferrer">DOI ↗</a>}{!d.draft && d.url && <a href={d.url} target="_blank" rel="noopener noreferrer">Read paper ↗</a>}<a href={`${base}publications/${paper.id}/`}>Details / BibTeX →</a></div></div>
+</article>

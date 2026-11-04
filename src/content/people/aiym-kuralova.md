@@ -1,7 +1,7 @@
 ---
 photo: "/images/team/placeholder-person.svg"
 name: "Aiym Kuralova"
-role: "Lead Researcher / B.Sc. Student"
+role: "B.Sc. Student"
 group: research
 status: current
 order: 20

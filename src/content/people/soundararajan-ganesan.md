@@ -4,7 +4,7 @@ name: "Soundararajan Ganesan"
 role: "Former Postdoctoral Researcher"
 group: alumni
 status: former
-order: 30
+order: 31
 affiliation: "Kaunas University of Technology \u2014 Postdoctoral Fellow"
 authorAliases: ["G Soundararajan", "Soundararajan Ganesan", "G Ganesan"]
 ---

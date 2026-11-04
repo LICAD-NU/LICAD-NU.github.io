@@ -10,4 +10,4 @@ affiliation: "Nazarbayev University"
 authorAliases: ["Z Nuriyev", "Zhangir Nuriyev"]
 ---
 
-Ph.D. researcher at LICAD. Research description to be confirmed.
+Ph.D. student at LICAD since 2023. Zhangir previously completed his M.Sc. at LICAD (2021–2023).

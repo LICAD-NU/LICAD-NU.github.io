@@ -1,11 +1,12 @@
 ---
 photo: "/images/team/aisha-tursynkozha.jpg"
 name: "Aisha Tursynkozha"
-role: "Former Ph.D. Student"
+role: "Ph.D. Graduate (2021–2025)"
 group: alumni
 status: former
-order: 31
+order: 30
 authorAliases: ["A Tursynkozha", "Aisha Tursynkozha"]
+affiliation: "Assistant Professor, Astana IT University"
 ---
 
-Former Ph.D. student. Current affiliation and biographical details to be confirmed.
+Aisha completed her Ph.D. at LICAD (2021–2025) and is now an Assistant Professor at Astana IT University.

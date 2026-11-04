@@ -4,8 +4,9 @@ name: "Al-Farabi"
 role: "Former Research Assistant"
 group: alumni
 status: former
-order: 33
+order: 37
 authorAliases: ["Al-Farabi"]
+affiliation: "Red Bull Headquarters"
 ---
 
-Former research assistant. Full preferred name, current affiliation, and biographical details to be confirmed.
+Former LICAD research assistant, now at Red Bull headquarters.
